@@ -18,7 +18,8 @@ router.post('/signup', async (req, res) => {
         // Create a new user and save to database
         const user = new User({ username, password, email, phoneNum, location });
         await user.save();
-        // Respond with success (no sensitive info)
+
+        // Respond with success
         res.status(201).send({ message: "User created successfully" });
     } catch (error) {
         res.status(500).send({ message: "Error creating user", error: error.message });
