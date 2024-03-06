@@ -1,23 +1,30 @@
-// server.js
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const userRoutes = require("./routes/userRoutes");
 
-const express = require('express');
-const mongoose = require('mongoose');
-const userRoutes = require('./routes/userRoutes'); // Import userRoutes
-require('dotenv').config(); // To use environment variables from .env file
+dotenv.config();
 
 const app = express();
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/LargeProject', {
-}).then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB:', err));
+// MongoDB connection
+const uri = process.env.MONGO_URI;
 
-// Use userRoutes for any requests that start with '/api/users'
-app.use('/api/users', userRoutes);
+mongoose
+  .connect(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-const PORT = process.env.PORT || 3000;
+// Routes
+app.use("/api/users", userRoutes);
+
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-
